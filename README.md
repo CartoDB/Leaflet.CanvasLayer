@@ -9,13 +9,18 @@ Leaflet provides a canvas layer which provides one canvas per tile to render. So
 just subclass it and override render method
 
 ```
-L.TorqueLayer = L.CanvasLayer.extend({
+var MyLayer = L.CanvasLayer.extend({
     render: function() {
         var canvas = this.getCanvas();
         var ctx = canvas.getContext('2d');
         // render
     }
 });
+
+
+// create and add to the map
+var layer = new MyLayer();
+layer.addTo(map);
 
 ```
 
