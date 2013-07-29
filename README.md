@@ -2,7 +2,7 @@
 # Intro
 
 Leaflet.Canvas is a full map canvas layer that allows you to render stuff on top of a map with HTML5 canvas element.
-Leaflet provides a canvas layer which provides one canvas per tile to render. Some things require a single canvas to render them
+Leaflet provides a [tiled canvas layer](http://leafletjs.com/reference.html#tilelayer-canvas) which provides one canvas per tile to render. Some things require a single canvas to render them properly.
 
 # how to use
 
