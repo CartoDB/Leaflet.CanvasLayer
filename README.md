@@ -21,6 +21,9 @@ L.TorqueLayer = L.CanvasLayer.extend({
 
 if you are creating an animation just use ``redraw`` method to schedule a canvas refresh
 
+# example
+
+ - used for map animation in http://mwcimpact.com/
 
 # license
 
