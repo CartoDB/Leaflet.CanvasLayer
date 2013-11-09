@@ -1,3 +1,4 @@
+if(typeof(L) !== 'undefined') {
 
 L.Mixin.TileLoader = {
 
@@ -11,10 +12,10 @@ L.Mixin.TileLoader = {
   },
 
   _removeTileLoader: function() {
-    map.off({
+    this._map.off({
         'moveend': this._updateTiles
     }, this);
-    //TODO: remove tiles
+    this._removeTiles();
   },
 
   _updateTiles: function () {
@@ -43,17 +44,30 @@ L.Mixin.TileLoader = {
       this._removeOtherTiles(tileBounds);
   },
 
+  _removeTiles: function (bounds) {
+      for (var key in this._tiles) {
+        this._removeTile(key);
+      }
+  },
+
+  _reloadTiles: function() {
+    this._removeTiles();
+    this._updateTiles();
+  },
+
   _removeOtherTiles: function (bounds) {
-      var kArr, x, y, key;
+      var kArr, x, y, z, key;
+      var zoom = this._map.getZoom();
 
       for (key in this._tiles) {
           if (this._tiles.hasOwnProperty(key)) {
               kArr = key.split(':');
               x = parseInt(kArr[0], 10);
               y = parseInt(kArr[1], 10);
+              z = parseInt(kArr[2], 10);
 
               // remove tile if it's out of bounds
-              if (x < bounds.min.x || x > bounds.max.x || y < bounds.min.y || y > bounds.max.y) {
+              if (zoom !== z || x < bounds.min.x || x > bounds.max.x || y < bounds.min.y || y > bounds.max.y) {
                   this._removeTile(key);
               }
           }
@@ -120,3 +134,5 @@ L.Mixin.TileLoader = {
 
   }
 }
+
+} //L defined

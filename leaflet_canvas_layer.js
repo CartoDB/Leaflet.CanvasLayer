@@ -1,3 +1,4 @@
+if(typeof(L) !== 'undefined') {
 /**
  * full canvas layer implementation for Leaflet
  */
@@ -40,9 +41,11 @@ L.CanvasLayer = L.Class.extend({
 
     map.on({
       'viewreset': this._reset
+      //'move': this._render
     }, this);
 
-    map.on('move', this._render, this);
+    map.on('move', this._render, this);//function(){ console.log("a"); }, this);
+    map.on('resize', this._reset, this);
 
     if(this.options.tileLoader) {
       this._initTileLoader();
@@ -63,7 +66,8 @@ L.CanvasLayer = L.Class.extend({
     map._container.removeChild(this._staticPane);
     map.off({
         'viewreset': this._reset,
-        'move': this._render
+        'move': this._render,
+        'resize': this._reset
     }, this);
   },
 
@@ -119,3 +123,5 @@ L.CanvasLayer = L.Class.extend({
   }
 
 });
+
+} //L defined
