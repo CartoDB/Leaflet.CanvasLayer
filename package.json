@@ -1,7 +1,7 @@
 {
     "name": "Leaflet.Canvas",
     "description": "full screen canvas layer for Leaflet",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "author": {
         "name": "Javi Santana",
         "url": "http://cartodb.com",
