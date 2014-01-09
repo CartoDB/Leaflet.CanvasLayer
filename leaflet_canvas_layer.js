@@ -27,6 +27,11 @@ L.CanvasLayer = L.Class.extend({
     this.render = this.render.bind(this);
     L.Util.setOptions(this, options);
     this._canvas = document.createElement('canvas');
+    this._canvas.style.position = 'absolute';
+    this._canvas.style.top = 0;
+    this._canvas.style.left = 0;
+    this._canvas.style.zIndex = options.zIndex || 0;
+
     this._ctx = this._canvas.getContext('2d');
     var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
                                 window.webkitRequestAnimationFrame || window.msRequestAnimationFrame || function(callback) {
@@ -38,7 +43,11 @@ L.CanvasLayer = L.Class.extend({
   onAdd: function (map) {
     this._map = map;
 
-    this._staticPane = map._createPane('leaflet-tile-pane', map._container);
+    //this._staticPane = map._createPane('leaflet-tile-pane', map._container);
+    if (!map._panes.staticPane) {
+      map._panes.staticPane = map._createPane('leaflet-tile-pane', map._container);
+    }
+    this._staticPane = map._panes.staticPane
     this._staticPane.appendChild(this._canvas);
 
     map.on({
@@ -86,6 +95,10 @@ L.CanvasLayer = L.Class.extend({
     this.options.opacity = opacity;
     this._updateOpacity();
     return this;
+  },
+
+  setZIndex: function(zIndex) {
+    this._canvas.style.zIndex = zIndex;
   },
 
   bringToFront: function () {
