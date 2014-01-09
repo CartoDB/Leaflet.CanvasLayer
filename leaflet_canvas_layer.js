@@ -21,8 +21,9 @@ L.CanvasLayer = L.Class.extend({
       tileLoader: false // installs tile loading events
   },
 
-  initialize: function (options) { 
+  initialize: function (options) {
     var self = this;
+    options = options || {};
     //this.project = this._project.bind(this);
     this.render = this.render.bind(this);
     L.Util.setOptions(this, options);
