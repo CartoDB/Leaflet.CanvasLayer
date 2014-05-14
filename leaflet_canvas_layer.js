@@ -70,10 +70,12 @@ L.CanvasLayer = L.Class.extend({
 
     // hack: listen to predrag event launched by dragging to
     // set container in position (0, 0) in screen coordinates
-    map.dragging._draggable.on('predrag', function() {
-      var d = map.dragging._draggable;
-      L.DomUtil.setPosition(this._canvas, { x: -d._newPos.x, y: -d._newPos.y });
-    }, this);
+    if (map.dragging.enabled()) {
+      map.dragging._draggable.on('predrag', function() {
+        var d = map.dragging._draggable;
+        L.DomUtil.setPosition(this._canvas, { x: -d._newPos.x, y: -d._newPos.y });
+      }, this);
+    }
 
     map.on({ 'viewreset': this._reset }, this);
     map.on('move', this.render, this);
