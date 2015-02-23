@@ -21,7 +21,7 @@ L.CanvasLayer = L.Class.extend({
       tileLoader: false // installs tile loading events
   },
 
-  initialize: function (options) {
+initialize: function (options) {
     var self = this;
     options = options || {};
     //this.project = this._project.bind(this);
@@ -179,6 +179,12 @@ L.CanvasLayer = L.Class.extend({
     var size = this._map.getSize();
     this._canvas.width = size.x;
     this._canvas.height = size.y;
+
+    // fix position
+    var pos = L.DomUtil.getPosition(this._map.getPanes().mapPane);
+    if (pos) {
+      L.DomUtil.setPosition(this._canvas, { x: -pos.x, y: -pos.y });
+    }
     this.onResize();
     this._render();
   },
