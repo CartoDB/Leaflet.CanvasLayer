@@ -22,14 +22,10 @@ L.CanvasLayer = L.Class.extend({
   },
 
 initialize: function (options) {
-    var self = this;
     options = options || {};
-    //this.project = this._project.bind(this);
     this.render = this.render.bind(this);
     L.Util.setOptions(this, options);
     this._canvas = this._createCanvas();
-    // backCanvas for zoom animation
-    this._backCanvas = this._createCanvas();
     this._ctx = this._canvas.getContext('2d');
     this.currentAnimationFrame = -1;
     this.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
@@ -41,8 +37,7 @@ initialize: function (options) {
   },
 
   _createCanvas: function() {
-    var canvas;
-    canvas = document.createElement('canvas');
+    var canvas = document.createElement('canvas');
     canvas.style.position = 'absolute';
     canvas.style.top = 0;
     canvas.style.left = 0;
@@ -62,8 +57,6 @@ initialize: function (options) {
     var tilePane = this._map._panes.tilePane;
     var _container = L.DomUtil.create('div', 'leaflet-layer');
     _container.appendChild(this._canvas);
-    _container.appendChild(this._backCanvas);
-    this._backCanvas.style.display = 'none';
     tilePane.appendChild(_container);
 
     this._container = _container;
@@ -80,10 +73,7 @@ initialize: function (options) {
     map.on({ 'viewreset': this._reset }, this);
     map.on('move', this.redraw, this);
     map.on('resize', this._reset, this);
-    map.on({
-        'zoomanim': this._animateZoom,
-        'zoomend': this._endZoomAnim
-    }, this);
+    map.on({ 'zoomanim': this._animateZoom }, this);
 
     if(this.options.tileLoader) {
       this._initTileLoader();
@@ -93,40 +83,10 @@ initialize: function (options) {
   },
 
   _animateZoom: function (e) {
-      if (!this._animating) {
-          this._animating = true;
-      }
-      var back = this._backCanvas;
-
-      back.width = this._canvas.width;
-      back.height = this._canvas.height;
-
-      // paint current canvas in back canvas with trasnformation
-      var pos = this._canvas._leaflet_pos || { x: 0, y: 0 };
-      back.getContext('2d').drawImage(this._canvas, 0, 0);
-
-      // hide original
-      this._canvas.style.display = 'none';
-      back.style.display = 'block';
-      var map = this._map;
-      var scale = map.getZoomScale(e.zoom);
-      var newCenter = map._latLngToNewLayerPoint(map.getCenter(), e.zoom, e.center);
-      var oldCenter = map._latLngToNewLayerPoint(e.center, e.zoom, e.center);
-
-      var origin = {
-        x:  newCenter.x - oldCenter.x,
-        y:  newCenter.y - oldCenter.y
-      };
-
-      var bg = back;
-      var transform = L.DomUtil.TRANSFORM;
-      bg.style[transform] =  L.DomUtil.getTranslateString(origin) + ' scale(' + e.scale + ') ';
-  },
-
-  _endZoomAnim: function () {
-      this._animating = false;
-      this._canvas.style.display = 'block';
-      this._backCanvas.style.display = 'none';
+    var zoomPosition = this._map.latLngToContainerPoint(e.center);
+    var mapCentre = this._map.latLngToContainerPoint(this._map.getCenter());
+    var zoomPositionTranslation = ' translate3d(' + (-zoomPosition.x + mapCentre.x) + 'px, ' + (-zoomPosition.y + mapCentre.y) + 'px, 0px)';
+    this._canvas.style.transform = this._canvas.style.transform + ' scale(' + e.scale + ', ' + e.scale + ')' + zoomPositionTranslation;
   },
 
   getCanvas: function() {
@@ -147,8 +107,7 @@ initialize: function (options) {
       'viewreset': this._reset,
       'move': this._render,
       'resize': this._reset,
-      'zoomanim': this._animateZoom,
-      'zoomend': this._endZoomAnim
+      'zoomanim': this._animateZoom
     }, this);
   },
 
@@ -188,13 +147,6 @@ initialize: function (options) {
     this.onResize();
     this._render();
   },
-
-  /*
-  _project: function(x) {
-    var point = this._map.latLngToLayerPoint(new L.LatLng(x[1], x[0]));
-    return [point.x, point.y];
-  },
-  */
 
   _updateOpacity: function () { },
 
