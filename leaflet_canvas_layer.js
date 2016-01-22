@@ -3,7 +3,7 @@ if(typeof(L) !== 'undefined') {
  * full canvas layer implementation for Leaflet
  */
 
-L.CanvasLayer = L.Class.extend({
+L.CanvasLayer = (L.Layer ? L.Layer : L.Class).extend({
 
   includes: [L.Mixin.Events, L.Mixin.TileLoader],
 
@@ -118,9 +118,12 @@ initialize: function (options) {
         y:  newCenter.y - oldCenter.y
       };
 
-      var bg = back;
-      var transform = L.DomUtil.TRANSFORM;
-      bg.style[transform] =  L.DomUtil.getTranslateString(origin) + ' scale(' + e.scale + ') ';
+
+      if (L.DomUtil.setTransform) {
+        L.DomUtil.setTransform(back, origin, e.scale);
+      } else {
+        back.style[L.DomUtil.TRANSFORM] =  L.DomUtil.getTranslateString(origin) + ' scale(' + e.scale + ') ';
+      }
   },
 
   _endZoomAnim: function () {
