@@ -57,7 +57,7 @@ initialize: function (options) {
     this._map = map;
 
     // add container with the canvas to the tile pane
-    // the container is moved in the oposite direction of the 
+    // the container is moved in the oposite direction of the
     // map pane to keep the canvas always in (0, 0)
     var tilePane = this._map._panes.tilePane;
     var _container = L.DomUtil.create('div', 'leaflet-layer');
@@ -143,9 +143,10 @@ initialize: function (options) {
 
   onRemove: function (map) {
     this._container.parentNode.removeChild(this._container);
+    map.dragging._draggable.off('predrag', this._predrag, this);
     map.off({
       'viewreset': this._reset,
-      'move': this._render,
+      'move': this.redraw,
       'resize': this._reset,
       'zoomanim': this._animateZoom,
       'zoomend': this._endZoomAnim
