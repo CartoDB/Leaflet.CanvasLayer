@@ -57,7 +57,7 @@ initialize: function (options) {
     this._map = map;
 
     // add container with the canvas to the tile pane
-    // the container is moved in the oposite direction of the 
+    // the container is moved in the oposite direction of the
     // map pane to keep the canvas always in (0, 0)
     var tilePane = this._map._panes.tilePane;
     var _container = L.DomUtil.create('div', 'leaflet-layer');
@@ -71,10 +71,7 @@ initialize: function (options) {
     // hack: listen to predrag event launched by dragging to
     // set container in position (0, 0) in screen coordinates
     if (map.dragging.enabled()) {
-      map.dragging._draggable.on('predrag', function() {
-        var d = map.dragging._draggable;
-        L.DomUtil.setPosition(this._canvas, { x: -d._newPos.x, y: -d._newPos.y });
-      }, this);
+      map.dragging._draggable.on('predrag', this._predrag, this);
     }
 
     map.on({ 'viewreset': this._reset }, this);
@@ -143,9 +140,10 @@ initialize: function (options) {
 
   onRemove: function (map) {
     this._container.parentNode.removeChild(this._container);
+    map.dragging._draggable.off('predrag', this._predrag, this);
     map.off({
       'viewreset': this._reset,
-      'move': this._render,
+      'move': this.redraw,
       'resize': this._reset,
       'zoomanim': this._animateZoom,
       'zoomend': this._endZoomAnim
@@ -173,6 +171,11 @@ initialize: function (options) {
 
   bringToBack: function () {
     return this;
+  },
+
+  _predrag: function() {
+    var d = map.dragging._draggable;
+    L.DomUtil.setPosition(this._canvas, { x: -d._newPos.x, y: -d._newPos.y });
   },
 
   _reset: function () {
