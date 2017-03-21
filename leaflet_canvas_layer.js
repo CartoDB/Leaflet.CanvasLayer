@@ -3,7 +3,7 @@ if(typeof(L) !== 'undefined') {
  * full canvas layer implementation for Leaflet
  */
 
-L.CanvasLayer = L.Layer.extend({
+L.CanvasLayer = L.GridLayer.extend({
 
   includes: [L.Mixin.Events, L.Mixin.TileLoader],
 
@@ -53,8 +53,8 @@ initialize: function (options) {
     return canvas;
   },
 
-  onAdd: function (map) {
-    this._map = map;
+  _layerAdd: function (e) {
+    var map = this._map = e.target;
 
     // add container with the canvas to the tile pane
     // the container is moved in the oposite direction of the
