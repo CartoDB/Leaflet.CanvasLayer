@@ -6,26 +6,27 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
   <!--[if lte IE 8]>
      <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
   <![endif]-->
-  <style> 
+  <style>
     html, body, #map { height: 100%; padding: 0; margin: 0;}
   </style>
 </head>
 <body>
   <div id="map"></div>
 
-  <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
   <script src="leaflet_canvas_layer.js"></script>
   <script>
 
-    var map = L.map('map').setView([0.0, -40.0], 2);
+    var map = L.map('map');
 
     L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {
       maxZoom: 18,
-      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery <a href="http://stamen.com">Stamen</a>'
+      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery <a href="http://stamen.com">Stamen</a>',
+      zIndex: 0,
     }).addTo(map);
 
     var BigPointLayer = L.CanvasLayer.extend({
@@ -60,6 +61,8 @@
 
     var layer = new BigPointLayer();
     layer.addTo(map);
+
+    map.setView([0.0, -40.0], 2);
 
   </script>
 </body>
