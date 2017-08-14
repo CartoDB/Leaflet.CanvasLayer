@@ -145,7 +145,7 @@ initialize: function (options) {
     this._container.parentNode.removeChild(this._container);
     map.off({
       'viewreset': this._reset,
-      'move': this._render,
+      'move': this.redraw,
       'resize': this._reset,
       'zoomanim': this._animateZoom,
       'zoomend': this._endZoomAnim
